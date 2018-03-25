@@ -1,9 +1,13 @@
 {
-  "name": "richard",
+  "name": "richardseul",
   "version": "1.0.0",
   "description": "Richard Seul Tracker",
   "author": "LePhasme <sebastien.courvoisier@gmail.com>",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LePhasme/richardseul.git"
+  },
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
