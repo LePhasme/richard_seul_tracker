@@ -9,21 +9,26 @@
     "url": "https://github.com/LePhasme/richardseul.git"
   },
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev": "npm run server | webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
-    "build": "node build/build.js"
+    "build": "node build/build.js",
+    "server": "pm2 start src/backend/index.js -s --watch --name server"
   },
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.4",
     "@fortawesome/fontawesome-free-solid": "^5.0.8",
     "@fortawesome/vue-fontawesome": "0.0.22",
     "async": "^2.6.0",
+    "body-parser": "^1.18.2",
     "bulma": "^0.6.2",
     "chance": "^1.0.13",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
     "jquery": "^3.3.1",
     "leapjs": "^0.6.4",
     "lodash": "^4.17.5",
+    "moment": "^2.21.0",
     "paper": "^0.11.5",
     "paper-jsdom": "^0.11.5",
     "ramda": "^0.25.0",
