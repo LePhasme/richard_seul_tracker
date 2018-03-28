@@ -89,9 +89,9 @@ export default {
             record.y = parseFloat(record.y)
             record.z = parseFloat(record.z)
           })
-          for (let key in item.keyPoints) {
-            item.keyPoints[key] = true
-          }
+          item.keyPoints.forEach((keyPoint) => {
+            keyPoint = parseInt(keyPoint)
+          })
         })
       })
       EventBus.$on('record-stop', this.recordStop)

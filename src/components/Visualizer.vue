@@ -165,16 +165,18 @@ export default {
         this.ctxFrontBack.lineTo(endPointX - (arrowWidth * Math.sin(arrowAngle + Math.PI / 6)), endPointY - (arrowWidth * Math.cos(arrowAngle + Math.PI / 6)))
         this.ctxFrontBack.stroke()
         for (i = 0; i < l; i++) {
-          if (recorder.keyPoints[recorder.records[i].t] === true) {
-            this.ctxTopBack.strokeStyle = 'rgb(255, 127, 127)'
-            this.ctxTopBack.beginPath()
-            this.ctxTopBack.arc(recorder.records[i].x * this.canvasTopBack.width / 2, recorder.records[i].z * this.canvasTopBack.height / 2, 3, 0, 2 * Math.PI, false)
-            this.ctxTopBack.stroke()
-            this.ctxFrontBack.strokeStyle = 'rgb(255, 127, 127)'
-            this.ctxFrontBack.beginPath()
-            this.ctxFrontBack.arc(recorder.records[i].x * this.canvasFrontBack.width / 2, (1 - recorder.records[i].y) * this.canvasFrontBack.height / 2, 3, 0, 2 * Math.PI, false)
-            this.ctxFrontBack.stroke()
-          }
+          recorder.keyPoints.forEach((keyPoint) => {
+            if (parseInt(keyPoint) === parseInt(recorder.records[i].t)) {
+              this.ctxTopBack.strokeStyle = 'rgb(255, 127, 127)'
+              this.ctxTopBack.beginPath()
+              this.ctxTopBack.arc(recorder.records[i].x * this.canvasTopBack.width / 2, recorder.records[i].z * this.canvasTopBack.height / 2, 3, 0, 2 * Math.PI, false)
+              this.ctxTopBack.stroke()
+              this.ctxFrontBack.strokeStyle = 'rgb(255, 127, 127)'
+              this.ctxFrontBack.beginPath()
+              this.ctxFrontBack.arc(recorder.records[i].x * this.canvasFrontBack.width / 2, (1 - recorder.records[i].y) * this.canvasFrontBack.height / 2, 3, 0, 2 * Math.PI, false)
+              this.ctxFrontBack.stroke()
+            }
+          })
         }
       }
     },
@@ -282,16 +284,18 @@ export default {
           this.ctxFrontBack.lineTo(endPointX - (arrowWidth * Math.sin(arrowAngle + Math.PI / 6)), endPointY - (arrowWidth * Math.cos(arrowAngle + Math.PI / 6)))
           this.ctxFrontBack.stroke()
           for (i = 0; i < l; i++) {
-            if (this.playingItems.keyPoints[this.playingItems.records[i].t] === true) {
-              this.ctxTopBack.strokeStyle = 'rgb(255, 127, 127)'
-              this.ctxTopBack.beginPath()
-              this.ctxTopBack.arc(this.playingItems.records[i].x * this.canvasTopBack.width / 2, this.playingItems.records[i].z * this.canvasTopBack.height / 2, 3, 0, 2 * Math.PI, false)
-              this.ctxTopBack.stroke()
-              this.ctxFrontBack.strokeStyle = 'rgb(255, 127, 127)'
-              this.ctxFrontBack.beginPath()
-              this.ctxFrontBack.arc(this.playingItems.records[i].x * this.canvasFrontBack.width / 2, (1 - this.playingItems.records[i].y) * this.canvasFrontBack.height / 2, 3, 0, 2 * Math.PI, false)
-              this.ctxFrontBack.stroke()
-            }
+            this.playingItems.keyPoints.forEach((keyPoint) => {
+              if (parseInt(keyPoint) === parseInt(this.playingItems.records[i].t)) {
+                this.ctxTopBack.strokeStyle = 'rgb(255, 127, 127)'
+                this.ctxTopBack.beginPath()
+                this.ctxTopBack.arc(this.playingItems.records[i].x * this.canvasTopBack.width / 2, this.playingItems.records[i].z * this.canvasTopBack.height / 2, 3, 0, 2 * Math.PI, false)
+                this.ctxTopBack.stroke()
+                this.ctxFrontBack.strokeStyle = 'rgb(255, 127, 127)'
+                this.ctxFrontBack.beginPath()
+                this.ctxFrontBack.arc(this.playingItems.records[i].x * this.canvasFrontBack.width / 2, (1 - this.playingItems.records[i].y) * this.canvasFrontBack.height / 2, 3, 0, 2 * Math.PI, false)
+                this.ctxFrontBack.stroke()
+              }
+            })
           }
         }
         let v1 = new Victor(this.playingItems.records[this.playingIndex].x, this.playingItems.records[this.playingIndex].z)
@@ -306,17 +310,23 @@ export default {
         let endPointY = this.playingItems.records[this.playingIndex + 1].z * this.canvasTop.height / 2
         let arrowAngle = Math.atan2(startPointX - endPointX, startPointY - endPointY) + Math.PI
         let arrowWidth = 5
-        if (this.playingItems.keyPoints[this.playingItems.records[this.playingIndex].t] === true) {
-          this.ctxTop.strokeStyle = 'rgb(255, 0, 0)'
-          this.ctxFront.strokeStyle = 'rgb(255, 0, 0)'
-          this.ctxTop.lineWidth = 5
-          this.ctxFront.lineWidth = 5
-        } else {
-          this.ctxTop.strokeStyle = 'rgb(0, 0, 0)'
-          this.ctxFront.strokeStyle = 'rgb(0, 0, 0)'
-          this.ctxTop.lineWidth = 1
-          this.ctxFront.lineWidth = 1
-        }
+        let keyPointSet = false
+        this.playingItems.keyPoints.forEach((keyPoint) => {
+          if (keyPointSet === false) {
+            if (parseInt(keyPoint) === parseInt(this.playingItems.records[this.playingIndex].t)) {
+              this.ctxTop.strokeStyle = 'rgb(255, 0, 0)'
+              this.ctxFront.strokeStyle = 'rgb(255, 0, 0)'
+              this.ctxTop.lineWidth = 5
+              this.ctxFront.lineWidth = 5
+              keyPointSet = true
+            } else {
+              this.ctxTop.strokeStyle = 'rgb(0, 0, 0)'
+              this.ctxFront.strokeStyle = 'rgb(0, 0, 0)'
+              this.ctxTop.lineWidth = 1
+              this.ctxFront.lineWidth = 1
+            }
+          }
+        })
         this.ctxTop.beginPath()
         this.ctxTop.moveTo(startPointX, startPointY)
         this.ctxTop.lineTo(endPointX, endPointY)

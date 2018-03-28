@@ -20,7 +20,7 @@ export default {
       startTime: 0,
       endTime: 0,
       records: [],
-      keyPoints: {},
+      keyPoints: [],
       playing: false
     }
   },
@@ -81,7 +81,7 @@ export default {
       this.statusText = '[space] to start recording ([esc] to cancel)'
       $('#recorder').addClass('is-warning')
       this.records = []
-      this.keyPoints = {}
+      this.keyPoints = []
       EventBus.$emit('record-pending')
     },
     start: function () {
@@ -112,7 +112,7 @@ export default {
       EventBus.$emit('record-updated', this)
     },
     addKeyPoint: function () {
-      this.keyPoints[this.records[this.records.length - 1].t] = true
+      this.keyPoints.push(this.records[this.records.length - 1].t)
     }
   },
   beforeDestroy () {
