@@ -20,7 +20,7 @@
 <script>
 import { EventBus } from '../event-bus.js'
 import * as $ from 'jQuery'
-// import Victor from 'victor'
+import Victor from 'victor'
 
 export default {
   name: 'Visualizer',
@@ -291,16 +291,17 @@ export default {
             }
           }
         }
+        let v1 = new Victor(this.playingItems.records[this.playingIndex].x, this.playingItems.records[this.playingIndex].z)
+        let v2 = new Victor(this.playingItems.records[this.playingIndex + 1].x, this.playingItems.records[this.playingIndex + 1].z)
+        let v3 = new Victor(this.playingItems.records[this.playingIndex].x, this.playingItems.records[this.playingIndex].y)
+        let v4 = new Victor(this.playingItems.records[this.playingIndex + 1].x, this.playingItems.records[this.playingIndex + 1].y)
+        EventBus.$emit('play-vector', v2.subtract(v1), v4.subtract(v3))
         this.clearFront()
         // top
         let startPointX = this.playingItems.records[this.playingIndex].x * this.canvasTop.width / 2
         let startPointY = this.playingItems.records[this.playingIndex].z * this.canvasTop.height / 2
         let endPointX = this.playingItems.records[this.playingIndex + 1].x * this.canvasTop.width / 2
         let endPointY = this.playingItems.records[this.playingIndex + 1].z * this.canvasTop.height / 2
-        // let v1 = new Victor(startPointX, startPointY)
-        // let v2 = new Victor(endPointX, endPointY)
-        // let vector = v2.subtract(v1)
-        // console.log(vector.toString())
         let arrowAngle = Math.atan2(startPointX - endPointX, startPointY - endPointY) + Math.PI
         let arrowWidth = 5
         if (this.playingItems.keyPoints[this.playingItems.records[this.playingIndex].t] === true) {

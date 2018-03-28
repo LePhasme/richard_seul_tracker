@@ -10,7 +10,7 @@
           do you really want to delete the record?
         </section>
         <footer class="modal-card-foot">
-          <button class="button is-danger" v-on:click="confirm">confirm</button>
+          <button class="button is-danger" v-on:click="confirm">delete</button>
           <button class="button" v-on:click="cancel">cancel</button>
         </footer>
       </div>
