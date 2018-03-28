@@ -33,7 +33,7 @@
             <font-awesome-icon icon="edit" size="lg" />
           </span>
         </a>
-        <a class="button is-danger" v-on:click="suppress(item.id)">
+        <a class="button is-danger suppress" v-on:click="suppress(item.id)">
           <span class="icon">
             <font-awesome-icon icon="trash-alt" size="lg" />
           </span>
@@ -129,8 +129,10 @@ export default {
       }
     },
     suppress: function (id) {
-      this._pending_suppress_id = id
-      $('.modal').addClass('is-active')
+      if ($('a.suppress').attr('disabled') !== 'disabled') {
+        this._pending_suppress_id = id
+        $('.modal').addClass('is-active')
+      }
     },
     confirm: function () {
       let newItems = []
