@@ -1,9 +1,24 @@
 <template>
   <div id="manager" class="tile is-child has-text-left">
+    <div class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">delete record</p>
+        </header>
+        <section class="modal-card-body">
+          do you really want to delete the record?
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-danger" v-on:click="confirm">confirm</button>
+          <button class="button" v-on:click="cancel">cancel</button>
+        </footer>
+      </div>
+    </div>
     <div class="message is-link" v-for="item in compItems" v-bind:key="item.id">
       <div class="message-header">
         <p>{{ item.label }}</p>
-        <a class="button is-primary">
+        <a class="button is-primary" v-on:click="play(item.id)">
           <span class="icon">
             <font-awesome-icon icon="play" size="lg" />
           </span>
@@ -18,7 +33,7 @@
             <font-awesome-icon icon="edit" size="lg" />
           </span>
         </a>
-        <a class="button is-danger">
+        <a class="button is-danger" v-on:click="suppress(item.id)">
           <span class="icon">
             <font-awesome-icon icon="trash-alt" size="lg" />
           </span>
@@ -81,6 +96,16 @@ export default {
       let chance = new Chance()
       $.getJSON('http://127.0.0.1:8090/items', (data) => { // @FIXME SETTINGS/API
         this.items = data
+        this.items.forEach((item) => { // @FIXME ???
+          item.records.forEach((record) => {
+            record.x = parseFloat(record.x)
+            record.y = parseFloat(record.y)
+            record.z = parseFloat(record.z)
+          })
+          for (let key in item.keyPoints) {
+            item.keyPoints[key] = true
+          }
+        })
       })
       EventBus.$on('record-stop', (recorder) => {
         if (recorder.records.length > 0) {
@@ -93,11 +118,50 @@ export default {
           let duration = moment.duration(item.records[item.records.length - 1].t)
           item.duration = (duration.asHours() | 0) + 'h ' + (duration.asMinutes() | 0) + 'm ' + (duration.asSeconds() | 0) + 's'
           this.items.push(item)
-          $.post('http://127.0.0.1:8090/items', {data: this.items}, (data) => { // @FIXME SETTINGS/API
-            // @TODO error/confirm
-          }, 'json')
+          this.saveAll()
         }
       })
+      EventBus.$on('play-end', () => {
+        this._pending_play_id = null
+        $('a.button').attr('disabled', false)
+      })
+    },
+    play: function (id) {
+      this._pending_play_id = id
+      for (let i = 0, l = this.items.length; i < l; i++) {
+        if (this.items[i].id === this._pending_play_id) {
+          EventBus.$emit('play-start', this.items[i])
+          $('a.button').attr('disabled', true)
+        }
+      }
+    },
+    suppress: function (id) {
+      this._pending_suppress_id = id
+      $('.modal').addClass('is-active')
+    },
+    confirm: function () {
+      let newItems = []
+      for (let i = 0, l = this.items.length; i < l; i++) {
+        if (this.items[i].id !== this._pending_suppress_id) {
+          newItems.push(this.items[i])
+        }
+      }
+      this._pending_suppress_id = null
+      this.items = newItems
+      this.saveAll((data) => {
+        $('.modal').removeClass('is-active')
+      })
+    },
+    cancel: function () {
+      this._pending_suppress_id = null
+      $('.modal').removeClass('is-active')
+    },
+    saveAll: function (cb) {
+      $.post('http://127.0.0.1:8090/items', {data: this.items}, (data) => { // @FIXME SETTINGS/API
+        if (cb) {
+          cb(data)
+        }
+      }, 'json')
     }
   },
   mounted () {

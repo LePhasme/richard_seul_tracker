@@ -20,29 +20,32 @@ export default {
       startTime: 0,
       endTime: 0,
       records: [],
-      keyPoints: {}
+      keyPoints: {},
+      playing: false
     }
   },
   methods: {
     init: function () {
       $(document).keyup((e) => {
-        if (e.keyCode === 27) { // esc
-          if (this.pending === true) {
-            this.stop()
-          }
-        } else if (e.keyCode === 32) { // space
-          if (this.pending === true) {
-            this.start()
-          } else if (this.recording === true) {
-            this.addKeyPoint()
-          }
-        } else if (e.keyCode === 78) { // n
-          if (this.pending === false && this.recording === false) {
-            this.wait()
-          }
-        } else if (e.keyCode === 83) { // s
-          if (this.recording === true) {
-            this.stop()
+        if (this.playing === false) {
+          if (e.keyCode === 27) { // esc
+            if (this.pending === true) {
+              this.stop()
+            }
+          } else if (e.keyCode === 32) { // space
+            if (this.pending === true) {
+              this.start()
+            } else if (this.recording === true) {
+              this.addKeyPoint()
+            }
+          } else if (e.keyCode === 78) { // n
+            if (this.pending === false && this.recording === false) {
+              this.wait()
+            }
+          } else if (e.keyCode === 83) { // s
+            if (this.recording === true) {
+              this.stop()
+            }
           }
         }
       })
@@ -56,6 +59,16 @@ export default {
         if (this.recording === true && to < 1) {
           this.stop()
         }
+      })
+      EventBus.$on('play-start', () => {
+        this.playing = false
+        $('#recorder').addClass('is-warning')
+        this.statusText = 'playing...'
+      })
+      EventBus.$on('play-end', () => {
+        this.playing = false
+        $('#recorder').removeClass('is-warning')
+        this.statusText = '[n]ew record'
       })
     },
     wait: function () {
