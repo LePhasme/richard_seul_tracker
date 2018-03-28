@@ -8,18 +8,17 @@
 </template>
 
 <script>
-import { EventBus } from './event-bus.js'
-
 export default {
   name: 'App',
   methods: {
     init: function () {
-      EventBus.$on('hands-changes', (from, to) => {
-        // console.log(`(in App) Hands changed from ${from} to ${to}`)
-      })
+      // nope
     }
   },
-  beforeMount () {
+  beforeDestroy () {
+    // nope
+  },
+  mounted () {
     this.init()
   }
 }

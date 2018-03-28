@@ -1,5 +1,5 @@
 <template>
-  <div id="tracker" class="tile is-child notification is-info">
+  <div id="tracker" class="tile is-child notification is-info is-marginless">
     <h1 class="subtitle is-5">{{statusText}}</h1>
   </div>
 </template>
@@ -74,6 +74,9 @@ export default {
       return r / l
     }
   },
+  beforeDestroy () {
+    // nope
+  },
   mounted () {
     this.init()
   }
@@ -83,5 +86,8 @@ export default {
 <style scoped>
 h1 {
   color: white;
+}
+#tracker {
+  margin-bottom: 0 !important;
 }
 </style>

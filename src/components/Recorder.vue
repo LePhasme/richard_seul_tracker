@@ -49,27 +49,31 @@ export default {
           }
         }
       })
-      EventBus.$on('hands-coordinates', (palm, radius) => {
-        if (this.recording === true && (this.oldCoords === null || Math.abs(this.oldCoords[0] - palm[0]) > this.delta || Math.abs(this.oldCoords[1] - palm[1]) > this.delta || Math.abs(this.oldCoords[2] - palm[2]) > this.delta)) {
-          this.record(Date.now(), palm, radius)
-          this.oldCoords = palm
-        }
-      })
-      EventBus.$on('hands-changes', (from, to) => {
-        if (this.recording === true && to < 1) {
-          this.stop()
-        }
-      })
-      EventBus.$on('play-start', () => {
-        this.playing = false
-        $('#recorder').addClass('is-warning')
-        this.statusText = 'playing...'
-      })
-      EventBus.$on('play-end', () => {
-        this.playing = false
-        $('#recorder').removeClass('is-warning')
-        this.statusText = '[n]ew record'
-      })
+      EventBus.$on('hands-coordinates', this.handsCoordinates)
+      EventBus.$on('hands-changes', this.handsChanges)
+      EventBus.$on('play-start', this.playStart)
+      EventBus.$on('play-end', this.playEnd)
+    },
+    handsCoordinates: function (palm, radius) {
+      if (this.recording === true && (this.oldCoords === null || Math.abs(this.oldCoords[0] - palm[0]) > this.delta || Math.abs(this.oldCoords[1] - palm[1]) > this.delta || Math.abs(this.oldCoords[2] - palm[2]) > this.delta)) {
+        this.record(Date.now(), palm, radius)
+        this.oldCoords = palm
+      }
+    },
+    handsChanges: function (from, to) {
+      if (this.recording === true && to < 1) {
+        this.stop()
+      }
+    },
+    playStart: function () {
+      this.playing = false
+      $('#recorder').addClass('is-warning')
+      this.statusText = 'playing...'
+    },
+    playEnd: function () {
+      this.playing = false
+      $('#recorder').removeClass('is-warning')
+      this.statusText = '[n]ew record'
     },
     wait: function () {
       this.pending = true
@@ -111,6 +115,12 @@ export default {
       this.keyPoints[this.records[this.records.length - 1].t] = true
     }
   },
+  beforeDestroy () {
+    EventBus.$off('hands-coordinates', this.handsCoordinates)
+    EventBus.$off('hands-changes', this.handsChanges)
+    EventBus.$off('play-start', this.playStart)
+    EventBus.$off('play-end', this.playEnd)
+  },
   mounted () {
     this.init()
   }
@@ -120,5 +130,8 @@ export default {
 <style scoped>
 h1 {
   color: white;
+}
+#recorder {
+  margin-bottom: 0 !important;
 }
 </style>

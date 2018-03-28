@@ -5,15 +5,25 @@ const app = express()
 const fs = require('fs')
 const path = require('path')
 const PololuMaestro = require('pololu-maestro')
+const server = require('http').Server(app)
+const io = require('socket.io')(server)
+
+io.on('connection', function (socket) {
+  socket.on('play-vector', function (xz, xy, keyPoint) {
+    console.log(xz, xy, keyPoint)
+  })
+})
 
 app.use(bodyParser.json({
   limit: '50mb'
 }))
+
 app.use(bodyParser.urlencoded({
   limit: '50mb',
   extended: true,
   parameterLimit: 1000000
 }))
+
 app.use(cors())
 
 app.get('/items', function(req, res, next) {
@@ -28,6 +38,6 @@ app.post('/items', function(req, res) {
   })
 })
 
-app.listen(8090, function() {
+server.listen(8090, function() {
   console.log('CORS-enabled web server listening on port 8090')
 })

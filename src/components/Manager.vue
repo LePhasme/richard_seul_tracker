@@ -40,20 +40,6 @@
         </a>
       </div>
       <div class="message-body">{{ item.duration }}</div>
-      <!-- header class="card-header">
-        <p class="card-header-title">
-          {{ item.id }}
-        </p>
-      </header>
-      <div class="card-content">
-        <div class="content">
-          {{ item.records.length }}
-        </div>
-      </div>
-      <footer class="card-footer">
-        <a href="#" class="card-footer-item">Edit</a>
-        <a href="#" class="card-footer-item">Delete</a>
-      </footer -->
     </div>
   </div>
 </template>
@@ -93,8 +79,9 @@ export default {
   },
   methods: {
     init: function () {
-      let chance = new Chance()
-      $.getJSON('http://127.0.0.1:8090/items', (data) => { // @FIXME SETTINGS/API
+      this.BACKEND_ADDR = process.env.BACKEND_ADDR
+      this.chance = new Chance()
+      $.getJSON(this.BACKEND_ADDR + '/items', (data) => {
         this.items = data
         this.items.forEach((item) => { // @FIXME ???
           item.records.forEach((record) => {
@@ -107,24 +94,30 @@ export default {
           }
         })
       })
-      EventBus.$on('record-stop', (recorder) => {
-        if (recorder.records.length > 0) {
-          let item = {
-            id: chance.guid(),
-            records: recorder.records,
-            keyPoints: recorder.keyPoints
-          }
-          item.label = moment().format('DD/MM/YYYY, HH:mm:ss')
-          let duration = moment.duration(item.records[item.records.length - 1].t)
-          item.duration = (duration.asHours() | 0) + 'h ' + (duration.asMinutes() | 0) + 'm ' + (duration.asSeconds() | 0) + 's'
-          this.items.push(item)
-          this.saveAll()
+      EventBus.$on('record-stop', this.recordStop)
+      EventBus.$on('play-end', this.playEnd)
+      EventBus.$on('play-vector', this.playVector)
+    },
+    recordStop: function (recorder) {
+      if (recorder.records.length > 0) {
+        let item = {
+          id: this.chance.guid(),
+          records: recorder.records,
+          keyPoints: recorder.keyPoints
         }
-      })
-      EventBus.$on('play-end', () => {
-        this._pending_play_id = null
-        $('a.button').attr('disabled', false)
-      })
+        item.label = moment().format('DD/MM/YYYY, HH:mm:ss')
+        let duration = moment.duration(item.records[item.records.length - 1].t)
+        item.duration = (duration.asHours() | 0) + 'h ' + (duration.asMinutes() | 0) + 'm ' + (duration.asSeconds() | 0) + 's'
+        this.items.push(item)
+        this.saveAll()
+      }
+    },
+    playEnd: function () {
+      this._pending_play_id = null
+      $('a.button').attr('disabled', false)
+    },
+    playVector: function (xz, xy, keyPoint) {
+      EventBus.socket.emit('play-vector', xz, xy, keyPoint)
     },
     play: function (id) {
       this._pending_play_id = id
@@ -157,7 +150,7 @@ export default {
       $('.modal').removeClass('is-active')
     },
     saveAll: function (cb) {
-      $.post('http://127.0.0.1:8090/items', {data: this.items}, (data) => { // @FIXME SETTINGS/API
+      $.post(this.BACKEND_ADDR + '/items', {data: this.items}, (data) => {
         if (cb) {
           cb(data)
         }
@@ -166,6 +159,11 @@ export default {
   },
   mounted () {
     this.init()
+  },
+  beforeDestroy () {
+    EventBus.$off('record-stop', this.recordStop)
+    EventBus.$off('play-end', this.playEnd)
+    EventBus.$off('play-vector', this.playVector)
   }
 }
 </script>

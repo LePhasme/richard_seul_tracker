@@ -107,122 +107,125 @@ export default {
       this.ctxFrontBack.scale(2, 2)
       this.clearFront()
       this.clearBack()
-      EventBus.$on('record-updated', (recorder) => {
-        if (recorder.records.length > 2) {
-          this.clearBack()
-          let i = 0
-          let l = recorder.records.length
-          this.ctxTopBack.strokeStyle = 'rgb(127, 127, 127)'
-          this.ctxTopBack.beginPath()
-          this.ctxTopBack.arc(recorder.records[0].x * this.canvasTopBack.width / 2, recorder.records[0].z * this.canvasTopBack.height / 2, 3, 0, 2 * Math.PI, false)
-          this.ctxTopBack.stroke()
-          this.ctxTopBack.setLineDash([1, 2])
-          this.ctxTopBack.beginPath()
-          this.ctxTopBack.moveTo(recorder.records[0].x * this.canvasTopBack.width / 2, recorder.records[0].z * this.canvasTopBack.height / 2)
-          this.ctxFrontBack.strokeStyle = 'rgb(127, 127, 127)'
-          this.ctxFrontBack.beginPath()
-          this.ctxFrontBack.arc(recorder.records[0].x * this.canvasFrontBack.width / 2, (1 - recorder.records[0].y) * this.canvasFrontBack.height / 2, 3, 0, 2 * Math.PI, false)
-          this.ctxFrontBack.stroke()
-          this.ctxFrontBack.setLineDash([1, 2])
-          this.ctxFrontBack.beginPath()
-          this.ctxFrontBack.moveTo(recorder.records[0].x * this.canvasFrontBack.width / 2, (1 - recorder.records[0].y) * this.canvasFrontBack.height / 2)
-          for (i = 1; i < l - 2; i++) {
-            let xc = (recorder.records[i].x + recorder.records[i + 1].x) / 2
-            let yc = (recorder.records[i].z + recorder.records[i + 1].z) / 2
-            this.ctxTopBack.quadraticCurveTo(recorder.records[i].x * this.canvasTopBack.width / 2, recorder.records[i].z * this.canvasTopBack.height / 2, xc * this.canvasTopBack.width / 2, yc * this.canvasTopBack.height / 2)
-            yc = (recorder.records[i].y + recorder.records[i + 1].y) / 2
-            this.ctxFrontBack.quadraticCurveTo(recorder.records[i].x * this.canvasFrontBack.width / 2, (1 - recorder.records[i].y) * this.canvasFrontBack.height / 2, xc * this.canvasFrontBack.width / 2, (1 - yc) * this.canvasFrontBack.height / 2)
-          }
-          this.ctxTopBack.quadraticCurveTo(recorder.records[i].x * this.canvasTopBack.width / 2, recorder.records[i].z * this.canvasTopBack.height / 2, recorder.records[i + 1].x * this.canvasTopBack.width / 2, recorder.records[i + 1].z * this.canvasTopBack.height / 2)
-          this.ctxTopBack.stroke()
-          this.ctxTopBack.setLineDash([])
-          let quadPointX = recorder.records[i].x * this.canvasTopBack.width / 2
-          let quadPointY = recorder.records[i].z * this.canvasTopBack.height / 2
-          let endPointX = recorder.records[i + 1].x * this.canvasTopBack.width / 2
-          let endPointY = recorder.records[i + 1].z * this.canvasTopBack.height / 2
-          let arrowAngle = Math.atan2(quadPointX - endPointX, quadPointY - endPointY) + Math.PI
-          let arrowWidth = 5
-          this.ctxTopBack.beginPath()
-          this.ctxTopBack.moveTo(endPointX - (arrowWidth * Math.sin(arrowAngle - Math.PI / 6)), endPointY - (arrowWidth * Math.cos(arrowAngle - Math.PI / 6)))
-          this.ctxTopBack.lineTo(endPointX, endPointY)
-          this.ctxTopBack.lineTo(endPointX - (arrowWidth * Math.sin(arrowAngle + Math.PI / 6)), endPointY - (arrowWidth * Math.cos(arrowAngle + Math.PI / 6)))
-          this.ctxTopBack.stroke()
-          this.ctxFrontBack.quadraticCurveTo(recorder.records[i].x * this.canvasFrontBack.width / 2, (1 - recorder.records[i].y) * this.canvasFrontBack.height / 2, recorder.records[i + 1].x * this.canvasFrontBack.width / 2, (1 - recorder.records[i + 1].y) * this.canvasFrontBack.height / 2)
-          this.ctxFrontBack.stroke()
-          this.ctxFrontBack.setLineDash([])
-          quadPointX = recorder.records[i].x * this.canvasTopBack.width / 2
-          quadPointY = (1 - recorder.records[i].y) * this.canvasFrontBack.height / 2
-          endPointX = recorder.records[i + 1].x * this.canvasTopBack.width / 2
-          endPointY = (1 - recorder.records[i + 1].y) * this.canvasFrontBack.height / 2
-          arrowAngle = Math.atan2(quadPointX - endPointX, quadPointY - endPointY) + Math.PI
-          this.ctxFrontBack.beginPath()
-          this.ctxFrontBack.moveTo(endPointX - (arrowWidth * Math.sin(arrowAngle - Math.PI / 6)), endPointY - (arrowWidth * Math.cos(arrowAngle - Math.PI / 6)))
-          this.ctxFrontBack.lineTo(endPointX, endPointY)
-          this.ctxFrontBack.lineTo(endPointX - (arrowWidth * Math.sin(arrowAngle + Math.PI / 6)), endPointY - (arrowWidth * Math.cos(arrowAngle + Math.PI / 6)))
-          this.ctxFrontBack.stroke()
-          for (i = 0; i < l; i++) {
-            if (recorder.keyPoints[recorder.records[i].t] === true) {
-              this.ctxTopBack.strokeStyle = 'rgb(255, 127, 127)'
-              this.ctxTopBack.beginPath()
-              this.ctxTopBack.arc(recorder.records[i].x * this.canvasTopBack.width / 2, recorder.records[i].z * this.canvasTopBack.height / 2, 3, 0, 2 * Math.PI, false)
-              this.ctxTopBack.stroke()
-              this.ctxFrontBack.strokeStyle = 'rgb(255, 127, 127)'
-              this.ctxFrontBack.beginPath()
-              this.ctxFrontBack.arc(recorder.records[i].x * this.canvasFrontBack.width / 2, (1 - recorder.records[i].y) * this.canvasFrontBack.height / 2, 3, 0, 2 * Math.PI, false)
-              this.ctxFrontBack.stroke()
-            }
+      EventBus.$on('record-updated', this.recordUpdated)
+      EventBus.$on('hands-coordinates', this.handsCoordinates)
+      EventBus.$on('play-start', this.playStart)
+    },
+    recordUpdated: function (recorder) {
+      if (recorder.records.length > 2) {
+        this.clearBack()
+        let i = 0
+        let l = recorder.records.length
+        this.ctxTopBack.strokeStyle = 'rgb(127, 127, 127)'
+        this.ctxTopBack.beginPath()
+        this.ctxTopBack.arc(recorder.records[0].x * this.canvasTopBack.width / 2, recorder.records[0].z * this.canvasTopBack.height / 2, 3, 0, 2 * Math.PI, false)
+        this.ctxTopBack.stroke()
+        this.ctxTopBack.setLineDash([1, 2])
+        this.ctxTopBack.beginPath()
+        this.ctxTopBack.moveTo(recorder.records[0].x * this.canvasTopBack.width / 2, recorder.records[0].z * this.canvasTopBack.height / 2)
+        this.ctxFrontBack.strokeStyle = 'rgb(127, 127, 127)'
+        this.ctxFrontBack.beginPath()
+        this.ctxFrontBack.arc(recorder.records[0].x * this.canvasFrontBack.width / 2, (1 - recorder.records[0].y) * this.canvasFrontBack.height / 2, 3, 0, 2 * Math.PI, false)
+        this.ctxFrontBack.stroke()
+        this.ctxFrontBack.setLineDash([1, 2])
+        this.ctxFrontBack.beginPath()
+        this.ctxFrontBack.moveTo(recorder.records[0].x * this.canvasFrontBack.width / 2, (1 - recorder.records[0].y) * this.canvasFrontBack.height / 2)
+        for (i = 1; i < l - 2; i++) {
+          let xc = (recorder.records[i].x + recorder.records[i + 1].x) / 2
+          let yc = (recorder.records[i].z + recorder.records[i + 1].z) / 2
+          this.ctxTopBack.quadraticCurveTo(recorder.records[i].x * this.canvasTopBack.width / 2, recorder.records[i].z * this.canvasTopBack.height / 2, xc * this.canvasTopBack.width / 2, yc * this.canvasTopBack.height / 2)
+          yc = (recorder.records[i].y + recorder.records[i + 1].y) / 2
+          this.ctxFrontBack.quadraticCurveTo(recorder.records[i].x * this.canvasFrontBack.width / 2, (1 - recorder.records[i].y) * this.canvasFrontBack.height / 2, xc * this.canvasFrontBack.width / 2, (1 - yc) * this.canvasFrontBack.height / 2)
+        }
+        this.ctxTopBack.quadraticCurveTo(recorder.records[i].x * this.canvasTopBack.width / 2, recorder.records[i].z * this.canvasTopBack.height / 2, recorder.records[i + 1].x * this.canvasTopBack.width / 2, recorder.records[i + 1].z * this.canvasTopBack.height / 2)
+        this.ctxTopBack.stroke()
+        this.ctxTopBack.setLineDash([])
+        let quadPointX = recorder.records[i].x * this.canvasTopBack.width / 2
+        let quadPointY = recorder.records[i].z * this.canvasTopBack.height / 2
+        let endPointX = recorder.records[i + 1].x * this.canvasTopBack.width / 2
+        let endPointY = recorder.records[i + 1].z * this.canvasTopBack.height / 2
+        let arrowAngle = Math.atan2(quadPointX - endPointX, quadPointY - endPointY) + Math.PI
+        let arrowWidth = 5
+        this.ctxTopBack.beginPath()
+        this.ctxTopBack.moveTo(endPointX - (arrowWidth * Math.sin(arrowAngle - Math.PI / 6)), endPointY - (arrowWidth * Math.cos(arrowAngle - Math.PI / 6)))
+        this.ctxTopBack.lineTo(endPointX, endPointY)
+        this.ctxTopBack.lineTo(endPointX - (arrowWidth * Math.sin(arrowAngle + Math.PI / 6)), endPointY - (arrowWidth * Math.cos(arrowAngle + Math.PI / 6)))
+        this.ctxTopBack.stroke()
+        this.ctxFrontBack.quadraticCurveTo(recorder.records[i].x * this.canvasFrontBack.width / 2, (1 - recorder.records[i].y) * this.canvasFrontBack.height / 2, recorder.records[i + 1].x * this.canvasFrontBack.width / 2, (1 - recorder.records[i + 1].y) * this.canvasFrontBack.height / 2)
+        this.ctxFrontBack.stroke()
+        this.ctxFrontBack.setLineDash([])
+        quadPointX = recorder.records[i].x * this.canvasTopBack.width / 2
+        quadPointY = (1 - recorder.records[i].y) * this.canvasFrontBack.height / 2
+        endPointX = recorder.records[i + 1].x * this.canvasTopBack.width / 2
+        endPointY = (1 - recorder.records[i + 1].y) * this.canvasFrontBack.height / 2
+        arrowAngle = Math.atan2(quadPointX - endPointX, quadPointY - endPointY) + Math.PI
+        this.ctxFrontBack.beginPath()
+        this.ctxFrontBack.moveTo(endPointX - (arrowWidth * Math.sin(arrowAngle - Math.PI / 6)), endPointY - (arrowWidth * Math.cos(arrowAngle - Math.PI / 6)))
+        this.ctxFrontBack.lineTo(endPointX, endPointY)
+        this.ctxFrontBack.lineTo(endPointX - (arrowWidth * Math.sin(arrowAngle + Math.PI / 6)), endPointY - (arrowWidth * Math.cos(arrowAngle + Math.PI / 6)))
+        this.ctxFrontBack.stroke()
+        for (i = 0; i < l; i++) {
+          if (recorder.keyPoints[recorder.records[i].t] === true) {
+            this.ctxTopBack.strokeStyle = 'rgb(255, 127, 127)'
+            this.ctxTopBack.beginPath()
+            this.ctxTopBack.arc(recorder.records[i].x * this.canvasTopBack.width / 2, recorder.records[i].z * this.canvasTopBack.height / 2, 3, 0, 2 * Math.PI, false)
+            this.ctxTopBack.stroke()
+            this.ctxFrontBack.strokeStyle = 'rgb(255, 127, 127)'
+            this.ctxFrontBack.beginPath()
+            this.ctxFrontBack.arc(recorder.records[i].x * this.canvasFrontBack.width / 2, (1 - recorder.records[i].y) * this.canvasFrontBack.height / 2, 3, 0, 2 * Math.PI, false)
+            this.ctxFrontBack.stroke()
           }
         }
-      })
-      EventBus.$on('hands-coordinates', (palm, radius) => {
-        if (this.playing === false) {
-          let topPoint = {
-            x: palm[0] * this.canvasTop.width / 2,
-            y: palm[2] * this.canvasTop.height / 2
-          }
-          let frontPoint = {
-            x: palm[0] * this.canvasFront.width / 2,
-            y: (1 - palm[1]) * this.canvasFront.height / 2
-          }
-          this.clearFront()
-          // top
-          this.ctxTop.strokeStyle = 'rgb(255, 0, 0)'
-          this.ctxTop.beginPath()
-          this.ctxTop.moveTo(topPoint.x - 5, topPoint.y)
-          this.ctxTop.lineTo(topPoint.x + 5, topPoint.y)
-          this.ctxTop.stroke()
-          this.ctxTop.beginPath()
-          this.ctxTop.moveTo(topPoint.x, topPoint.y - 5)
-          this.ctxTop.lineTo(topPoint.x, topPoint.y + 5)
-          this.ctxTop.stroke()
-          this.ctxTop.beginPath()
-          this.ctxTop.arc(topPoint.x, topPoint.y, 8, 0, 2 * Math.PI, false)
-          this.ctxTop.stroke()
-          // front
-          this.ctxFront.strokeStyle = 'rgb(255, 0, 0)'
-          this.ctxFront.beginPath()
-          this.ctxFront.moveTo(frontPoint.x - 5, frontPoint.y)
-          this.ctxFront.lineTo(frontPoint.x + 5, frontPoint.y)
-          this.ctxFront.stroke()
-          this.ctxFront.beginPath()
-          this.ctxFront.moveTo(frontPoint.x, frontPoint.y - 5)
-          this.ctxFront.lineTo(frontPoint.x, frontPoint.y + 5)
-          this.ctxFront.stroke()
-          this.ctxFront.beginPath()
-          this.ctxFront.arc(frontPoint.x, frontPoint.y, 8, 0, 2 * Math.PI, false)
-          this.ctxFront.stroke()
+      }
+    },
+    handsCoordinates: function (palm, radius) {
+      if (this.playing === false) {
+        let topPoint = {
+          x: palm[0] * this.canvasTop.width / 2,
+          y: palm[2] * this.canvasTop.height / 2
         }
-      })
-      EventBus.$on('play-start', (items) => {
-        if (this.playing === false) {
-          this.playing = true
-          this.playingIndex = 0
-          this.playingSubIndex = 0
-          this.playingItems = items
-          this.clearFront()
-          this.play(true)
+        let frontPoint = {
+          x: palm[0] * this.canvasFront.width / 2,
+          y: (1 - palm[1]) * this.canvasFront.height / 2
         }
-      })
+        this.clearFront()
+        // top
+        this.ctxTop.strokeStyle = 'rgb(255, 0, 0)'
+        this.ctxTop.beginPath()
+        this.ctxTop.moveTo(topPoint.x - 5, topPoint.y)
+        this.ctxTop.lineTo(topPoint.x + 5, topPoint.y)
+        this.ctxTop.stroke()
+        this.ctxTop.beginPath()
+        this.ctxTop.moveTo(topPoint.x, topPoint.y - 5)
+        this.ctxTop.lineTo(topPoint.x, topPoint.y + 5)
+        this.ctxTop.stroke()
+        this.ctxTop.beginPath()
+        this.ctxTop.arc(topPoint.x, topPoint.y, 8, 0, 2 * Math.PI, false)
+        this.ctxTop.stroke()
+        // front
+        this.ctxFront.strokeStyle = 'rgb(255, 0, 0)'
+        this.ctxFront.beginPath()
+        this.ctxFront.moveTo(frontPoint.x - 5, frontPoint.y)
+        this.ctxFront.lineTo(frontPoint.x + 5, frontPoint.y)
+        this.ctxFront.stroke()
+        this.ctxFront.beginPath()
+        this.ctxFront.moveTo(frontPoint.x, frontPoint.y - 5)
+        this.ctxFront.lineTo(frontPoint.x, frontPoint.y + 5)
+        this.ctxFront.stroke()
+        this.ctxFront.beginPath()
+        this.ctxFront.arc(frontPoint.x, frontPoint.y, 8, 0, 2 * Math.PI, false)
+        this.ctxFront.stroke()
+      }
+    },
+    playStart: function (items) {
+      if (this.playing === false) {
+        this.playing = true
+        this.playingIndex = 0
+        this.playingSubIndex = 0
+        this.playingItems = items
+        this.clearFront()
+        this.play(true)
+      }
     },
     play: function (init) {
       if (this.playing === true && this.playingIndex < this.playingItems.records.length - 1) {
@@ -295,7 +298,6 @@ export default {
         let v2 = new Victor(this.playingItems.records[this.playingIndex + 1].x, this.playingItems.records[this.playingIndex + 1].z)
         let v3 = new Victor(this.playingItems.records[this.playingIndex].x, this.playingItems.records[this.playingIndex].y)
         let v4 = new Victor(this.playingItems.records[this.playingIndex + 1].x, this.playingItems.records[this.playingIndex + 1].y)
-        EventBus.$emit('play-vector', v2.subtract(v1), v4.subtract(v3))
         this.clearFront()
         // top
         let startPointX = this.playingItems.records[this.playingIndex].x * this.canvasTop.width / 2
@@ -339,6 +341,7 @@ export default {
         this.ctxFront.lineWidth = 1
         this.playingSubIndex++
         if (this.playingSubIndex > 2) {
+          EventBus.$emit('play-vector', v2.subtract(v1), v4.subtract(v3), (this.playingItems.keyPoints[this.playingItems.records[this.playingIndex].t] === true))
           this.playingSubIndex = 0
           this.playingIndex++
         }
@@ -349,6 +352,11 @@ export default {
       }
     }
   },
+  beforeDestroy () {
+    EventBus.$off('record-updated', this.recordUpdated)
+    EventBus.$off('hands-coordinates', this.handsCoordinates)
+    EventBus.$off('play-start', this.playStart)
+  },
   mounted () {
     this.init()
   }
@@ -358,6 +366,9 @@ export default {
 <style scoped>
 h1 {
   color: black;
+}
+#visualizer {
+  background: #fff;
 }
 .canvasWrapper {
   position: relative;
