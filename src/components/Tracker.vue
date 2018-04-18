@@ -44,6 +44,11 @@ export default {
         }
         this.handsLength = newLength
       })
+      $(document).off('mousemove')
+      $(document).mousemove((e) => {
+        let pos = [e.pageX / $(document).width(), 0, e.pageY / $(document).height()]
+        EventBus.$emit('hands-coordinates', this.smoothPos(pos), this.smoothRadius(0))
+      })
     },
     smoothPos: function (newPos) {
       this.smoothingPos.push(newPos)
