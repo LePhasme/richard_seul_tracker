@@ -19,38 +19,24 @@ if (useArduino === true) {
   })
 
   board.on('error', function(err) {
-    console.log('Erreur du contrôleur :')
+    console.log('Erreur du contrôleur Arduino :')
     console.log(err)
   })
 
   board.on('open', function() {
     boardOpened = true
-    console.log('Contrôleur ouvert !')
+    console.log('Contrôleur Arduino ouvert !')
   })
 
   board.on('data', function(data) {
-    boardData += data.toString().trim()
-    let indexEnd = boardData.indexOf(']')
-    if (indexEnd !== -1) {
-      let indexStart = boardData.indexOf('[')
-      if (indexStart !== -1) {
-        if (indexStart < indexEnd) {
-          boardData = boardData.substr(indexStart, indexEnd - indexStart + 1)
-          if (boardData.indexOf('ok') !== -1) {
-            // @TODO: Exécuter la commande suivante...
-          }
-          boardData = ''
-        } else {
-          boardData = boardData.substr(indexStart)
-        }
-      } else {
-        boardData = ''
-      }
-    }
+    // @TODO: gérer les données issues de l'Arduino
   })
 }
 
 io.on('connection', function(socket) {
+  // L'application principale est en train de jouer une séquence de mouvements...
+  // Chaque mouvement est envoyé sous la forme d'un couple de vecteurs
+  // xz (déplacement de la base) et xy (déplacement des vérins)
   socket.on('play-vector', function(xz, xy, keyPoint) {
     console.log(xz, xy, keyPoint)
     if (useArduino === true && boardOpened === true) {
@@ -71,12 +57,14 @@ app.use(bodyParser.urlencoded({
 
 app.use(cors())
 
+// Lecture des données
 app.get('/items', function(req, res, next) {
   fs.readFile(path.join(path.dirname(path.dirname(__dirname)), 'data', 'items.json'), (err, data) => {
     res.json(JSON.parse(data.toString()))
   })
 })
 
+// Enregistrement des données
 app.post('/items', function(req, res) {
   fs.writeFile(path.join(path.dirname(path.dirname(__dirname)), 'data', 'items.json'), JSON.stringify(req.body.data), (err) => {
     res.send({ done: true })
@@ -84,5 +72,5 @@ app.post('/items', function(req, res) {
 })
 
 server.listen(8090, function() {
-  console.log('CORS-enabled web server listening on port 8090')
+  console.log('Server écoutant sur le port 8090')
 })
