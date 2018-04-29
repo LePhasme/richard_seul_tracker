@@ -10,7 +10,7 @@ Voir le dépôt https://github.com/LePhasme/richard_seul_test pour la partie Ard
 1. Pour une installation sous Windows, exécuter la commande : `npm install --global --production windows-build-tools` _(voir [ici](https://github.com/felixrieseberg/windows-build-tools) pour plus de détails, il se peut que le terminal doive être lancé en mode administrateur)_ 
 1. Installer [PM2](https://github.com/Unitech/pm2) : `npm install --global pm2` _(il se peut que le terminal doive être lancé en mode administrateur)_
 1. Télécharger ou clôner le présent dépôt
-1. Dans le dossier `richardseul`, exécuter la commande `npm install` 
+1. Dans le dossier `richard_seul_tracker`, exécuter la commande `npm install` 
 
 ## Contenu
 
