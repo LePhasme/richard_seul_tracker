@@ -4,7 +4,7 @@ Enregistre les mouvements de la souris et les rejoue via la base robotique.
 
 ## Instalation
 
-Voir le dépôt https://github.com/LePhasme/richard_seul pour la partie Arduino (script de test et bibliothèques requises).  
+Voir le dépôt https://github.com/LePhasme/richard_seul_test pour la partie Arduino (script de test et bibliothèques requises).  
 
 1. Installer [node.js](https://nodejs.org/en/) (version 8.x LTS)
 1. Pour une installation sous Windows, exécuter la commande : `npm install --global --production windows-build-tools` _(voir [ici](https://github.com/felixrieseberg/windows-build-tools) pour plus de détails, il se peut que le terminal doive être lancé en mode administrateur)_ 
