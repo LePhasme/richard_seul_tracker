@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Leap from 'leapjs'
+// import Leap from 'leapjs'
 import { EventBus } from '../event-bus.js'
 import * as $ from 'jQuery'
 
@@ -23,6 +23,7 @@ export default {
   },
   methods: {
     init: function () {
+      /*
       Leap.loop({
         background: true
       }, frame => {
@@ -44,6 +45,7 @@ export default {
         }
         this.handsLength = newLength
       })
+      */
       $(document).off('mousemove')
       $(document).mousemove((e) => {
         let pos = [e.pageX / $(document).width(), 0, e.pageY / $(document).height()]
@@ -93,6 +95,7 @@ h1 {
   color: white;
 }
 #tracker {
+  display: none;
   margin-bottom: 0 !important;
 }
 </style>
